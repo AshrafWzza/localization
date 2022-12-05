@@ -118,7 +118,7 @@ class AppLocalizationsSetup with ChangeNotifier {
     return null;
   }
 
-  void changeLanguage(String? lang) async {
+  Future<void> changeLanguage(String? lang) async {
     final prefs = await SharedPreferences.getInstance();
     switch (lang) {
       case 'ar':
@@ -126,19 +126,21 @@ class AppLocalizationsSetup with ChangeNotifier {
         print('_savedLocalPreferenceLang 000 $_savedLocalPreferenceLang');
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('languagePreferences', 'ar');
-        notifyListeners();
         print('_savedLocalPreferenceLang 111 $_savedLocalPreferenceLang');
+        print('_savedLocalPreferenceLang 222 $savedLocalPreferenceLang');
         break;
       case 'en':
         _savedLocalPreferenceLang = Locale(lang!);
         print('_savedLocalPreferenceLang 000 $_savedLocalPreferenceLang');
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('languagePreferences', 'en');
-        notifyListeners();
         print('_savedLocalPreferenceLang 111 $_savedLocalPreferenceLang');
-        notifyListeners();
+        break;
+      default:
+        _savedLocalPreferenceLang = null;
         break;
     }
+    print('En Switchhhh');
     notifyListeners();
   }
 

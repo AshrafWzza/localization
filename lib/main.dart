@@ -26,9 +26,26 @@ class _MyAppState extends State<MyApp> {
     widget.localeStringPreferenced = prefs.getString('languagePreferences');
     print(
         'widget.localeStringPreferenced${prefs.getString('languagePreferences')}');
-
     widget.localePreferenced = await AppLocalizationsSetup().getSavedLanguage();
-    print('widget.localePreferenced${prefs.getString('languagePreferences')}');
+
+    print('widget.localePreferenced${widget.localePreferenced}');
+    // AppLocalizationsSetup().savedLocalPreferenceLang =
+    //     Locale(widget.localePreferenced.toString());
+  }
+
+  Future<String?> getData() async {
+    super.didChangeDependencies();
+    final prefs = await SharedPreferences.getInstance();
+    print('**************${prefs.getString('languagePreferences')}');
+
+    print(
+        'widget.localeStringPreferenced${prefs.getString('languagePreferences')}');
+    widget.localePreferenced = await AppLocalizationsSetup().getSavedLanguage();
+
+    print('widget.localePreferenced${widget.localePreferenced}');
+    // AppLocalizationsSetup().savedLocalPreferenceLang =
+    //     Locale(widget.localePreferenced.toString());
+    return prefs.getString('languagePreferences');
   }
 
   @override
@@ -36,38 +53,67 @@ class _MyAppState extends State<MyApp> {
     return ChangeNotifierProvider<AppLocalizationsSetup>(
       create: (_) => AppLocalizationsSetup(),
       child: Consumer<AppLocalizationsSetup>(builder: (_, model, __) {
+        /*print(
+            'before model.setSavedLocalPreferenceLang ${model.savedLocalPreferenceLang}');
+        if (widget.localePreferenced != null) {
+          print('ber inside null check');
+          model.copyWith(
+              savedLocalPreferenceLang:
+                  Locale(widget.localePreferenced.toString()));
+          print('aft inside null check');
+        }
         print(
-            'bef model.setSavedLocalPreferenceLang ${model.savedLocalPreferenceLang}');
-        return MaterialApp(
-          title: 'Flutter Demo',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-          ),
-          // List all of the app's supported locales here
-          supportedLocales: AppLocalizationsSetup.supportedLocales,
-          // These delegates make sure that the localization data for the proper language is loaded
-          localizationsDelegates: AppLocalizationsSetup.localizationsDelegates,
-          //localeResolutionCallback: AppLocalizationsSetup.localeResolutionCallback,
-          locale: model.savedLocalPreferenceLang,
-          // locale: model.savedLocalPreferenceLang == null &&
-          //         widget.localeStringPreferenced != null
-          //     ? Locale(widget.localeStringPreferenced!)
-          //     : model.savedLocalPreferenceLang != null &&
-          //             widget.localeStringPreferenced == null
-          //         ? model.savedLocalPreferenceLang
-          //         : null,
-          home: MyHomePage(model: model),
-        );
+            'after model.setSavedLocalPreferenceLang ${model.savedLocalPreferenceLang}');*/
+        return FutureBuilder(
+            future: getData(),
+            builder: (context, snapshot) {
+              if (snapshot.data == null)
+                print(
+                    'before model.setSavedLocalPreferenceLang ${model.savedLocalPreferenceLang}');
+              if (snapshot.data != null) {
+                print('ber inside null check');
+                model.copyWith(
+                    savedLocalPreferenceLang: Locale(snapshot.data.toString()));
+                print('aft inside null check');
+              }
+              print(
+                  'after model.setSavedLocalPreferenceLang ${model.savedLocalPreferenceLang}');
+
+              return MaterialApp(
+                title: 'Flutter Demo',
+                theme: ThemeData(
+                  primarySwatch: Colors.blue,
+                ),
+                // List all of the app's supported locales here
+                supportedLocales: AppLocalizationsSetup.supportedLocales,
+                // These delegates make sure that the localization data for the proper language is loaded
+                localizationsDelegates:
+                    AppLocalizationsSetup.localizationsDelegates,
+                //localeResolutionCallback: AppLocalizationsSetup.localeResolutionCallback,
+                locale: model.savedLocalPreferenceLang,
+                // locale: model.savedLocalPreferenceLang == null &&
+                //         widget.localeStringPreferenced != null
+                //     ? Locale(widget.localeStringPreferenced!)
+                //     : model.savedLocalPreferenceLang != null &&
+                //             widget.localeStringPreferenced == null
+                //         ? model.savedLocalPreferenceLang
+                //         : null,
+                home: MyHomePage(/*model: model*/),
+              );
+            });
       }),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  AppLocalizationsSetup model;
+  //AppLocalizationsSetup model;
   String? preferredLanguage;
 
-  MyHomePage({super.key, required this.model});
+  MyHomePage({
+    super.key,
+    /*required this.model*/
+  });
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -84,6 +130,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final modelLocale =
+        Provider.of<AppLocalizationsSetup>(context, listen: false);
     return Scaffold(
       body: Center(
         child: Padding(
@@ -110,19 +158,19 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               ElevatedButton(
                   onPressed: () async {
-                    await widget.model.changeLanguage('ar');
-                    final x = await widget.model.getSavedLanguage();
+                    await modelLocale.changeLanguage('ar');
+                    final x = await modelLocale.getSavedLanguage();
                     print('aaarrraabiccc $x');
-                    print('aaarrr ${widget.model.savedLocalPreferenceLang}');
+                    print('aaarrr ${modelLocale.savedLocalPreferenceLang}');
                     setState(() {});
                   },
                   child: Text('Arabic')),
               ElevatedButton(
                   onPressed: () async {
-                    await widget.model.changeLanguage('en');
-                    final x = await widget.model.getSavedLanguage();
+                    await modelLocale.changeLanguage('en');
+                    final x = await modelLocale.getSavedLanguage();
                     print('eennggllisshh  $x');
-                    print('eeennnn ${widget.model.savedLocalPreferenceLang}');
+                    print('eeennnn ${modelLocale.savedLocalPreferenceLang}');
                     setState(() {});
                   },
                   child: Text('English')),

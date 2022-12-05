@@ -69,12 +69,20 @@ class _AppLocalizationsDelegate
 }
 
 class AppLocalizationsSetup with ChangeNotifier {
-  Locale? _savedLocalPreferenceLang;
-  Locale? get savedLocalPreferenceLang => _savedLocalPreferenceLang;
-  void setSavedLocalPreferenceLang(Locale? locale) {
-    _savedLocalPreferenceLang = locale;
+  Locale? savedLocalPreferenceLang;
+  void copyWith({
+    Locale? savedLocalPreferenceLang,
+  }) {
+    this.savedLocalPreferenceLang =
+        savedLocalPreferenceLang ?? this.savedLocalPreferenceLang;
   }
 
+  //Locale? get savedLocalPreferenceLang => _savedLocalPreferenceLang;
+  // void setSavedLocalPreferenceLang(Locale? locale) {
+  //   _savedLocalPreferenceLang = locale;
+  // }
+  // set savedLocalPreferenceLang(Locale? locale) =>
+  //     _savedLocalPreferenceLang = locale;
   static const Iterable<Locale> supportedLocales = [
     Locale('en'),
     Locale('ar'),
@@ -111,9 +119,9 @@ class AppLocalizationsSetup with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     final lang = prefs.getString('languagePreferences');
     if (lang != null) {
-      _savedLocalPreferenceLang = Locale(lang);
+      savedLocalPreferenceLang = Locale(lang);
       notifyListeners();
-      return _savedLocalPreferenceLang;
+      return savedLocalPreferenceLang;
     }
     return null;
   }
@@ -122,22 +130,22 @@ class AppLocalizationsSetup with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     switch (lang) {
       case 'ar':
-        _savedLocalPreferenceLang = Locale(lang!);
-        print('_savedLocalPreferenceLang 000 $_savedLocalPreferenceLang');
+        savedLocalPreferenceLang = Locale(lang!);
+        print('_savedLocalPreferenceLang 000 $savedLocalPreferenceLang');
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('languagePreferences', 'ar');
-        print('_savedLocalPreferenceLang 111 $_savedLocalPreferenceLang');
+        print('_savedLocalPreferenceLang 111 $savedLocalPreferenceLang');
         print('_savedLocalPreferenceLang 222 $savedLocalPreferenceLang');
         break;
       case 'en':
-        _savedLocalPreferenceLang = Locale(lang!);
-        print('_savedLocalPreferenceLang 000 $_savedLocalPreferenceLang');
+        savedLocalPreferenceLang = Locale(lang!);
+        print('_savedLocalPreferenceLang 000 $savedLocalPreferenceLang');
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('languagePreferences', 'en');
-        print('_savedLocalPreferenceLang 111 $_savedLocalPreferenceLang');
+        print('_savedLocalPreferenceLang 111 $savedLocalPreferenceLang');
         break;
       default:
-        _savedLocalPreferenceLang = null;
+        savedLocalPreferenceLang = null;
         break;
     }
     print('En Switchhhh');

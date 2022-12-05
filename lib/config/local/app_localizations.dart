@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppLocalizations {
   final Locale locale;
@@ -71,6 +72,8 @@ class AppLocalizationsSetup {
   static const Iterable<Locale> supportedLocales = [
     Locale('en'),
     Locale('ar'),
+    /*Locale('en', 'US'),
+    Locale('sk', 'SK'),*/
   ];
 
   static const Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates =
@@ -98,7 +101,22 @@ class AppLocalizationsSetup {
     return supportedLocales.first;
   }
 
-  static Locale? defaultLocale(Locale? locale) {
+ /* Future<Locale?> getSavedLanguage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lang = prefs.getString('languagePreferences');
+    if (lang != null) {
+      return Locale(lang);
+    }
+    return null;
+  }*/
+
+/*  Future<Locale?> defaultLocale(Locale? locale) async {
+    *//*  final savedLocale = await getSavedLanguage();
+    print('savedLocale 0 $savedLocale');
+    if (savedLocale != null) {
+      print('savedLocale 1 $savedLocale');
+      locale = savedLocale;
+    }*//*
     for (Locale supportedLocale in supportedLocales) {
       if (supportedLocale.languageCode == locale?.languageCode &&
           supportedLocale.countryCode == locale?.countryCode) {
@@ -106,5 +124,5 @@ class AppLocalizationsSetup {
       }
     }
     return supportedLocales.first;
-  }
+  }*/
 }

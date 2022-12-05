@@ -68,7 +68,13 @@ class _AppLocalizationsDelegate
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
-class AppLocalizationsSetup {
+class AppLocalizationsSetup with ChangeNotifier {
+  Locale? _savedLocalPreferenceLang;
+  Locale? get savedLocalPreferenceLang => _savedLocalPreferenceLang;
+  void setSavedLocalPreferenceLang(Locale? locale) {
+    _savedLocalPreferenceLang = locale;
+  }
+
   static const Iterable<Locale> supportedLocales = [
     Locale('en'),
     Locale('ar'),
@@ -101,22 +107,48 @@ class AppLocalizationsSetup {
     return supportedLocales.first;
   }
 
- /* Future<Locale?> getSavedLanguage() async {
+  Future<Locale?> getSavedLanguage() async {
     final prefs = await SharedPreferences.getInstance();
     final lang = prefs.getString('languagePreferences');
     if (lang != null) {
-      return Locale(lang);
+      _savedLocalPreferenceLang = Locale(lang);
+      notifyListeners();
+      return _savedLocalPreferenceLang;
     }
     return null;
-  }*/
+  }
+
+  void changeLanguage(String? lang) async {
+    final prefs = await SharedPreferences.getInstance();
+    switch (lang) {
+      case 'ar':
+        _savedLocalPreferenceLang = Locale(lang!);
+        print('_savedLocalPreferenceLang 000 $_savedLocalPreferenceLang');
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('languagePreferences', 'ar');
+        notifyListeners();
+        print('_savedLocalPreferenceLang 111 $_savedLocalPreferenceLang');
+        break;
+      case 'en':
+        _savedLocalPreferenceLang = Locale(lang!);
+        print('_savedLocalPreferenceLang 000 $_savedLocalPreferenceLang');
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('languagePreferences', 'en');
+        notifyListeners();
+        print('_savedLocalPreferenceLang 111 $_savedLocalPreferenceLang');
+        notifyListeners();
+        break;
+    }
+    notifyListeners();
+  }
 
 /*  Future<Locale?> defaultLocale(Locale? locale) async {
-    *//*  final savedLocale = await getSavedLanguage();
+    */ /*  final savedLocale = await getSavedLanguage();
     print('savedLocale 0 $savedLocale');
     if (savedLocale != null) {
       print('savedLocale 1 $savedLocale');
       locale = savedLocale;
-    }*//*
+    }*/ /*
     for (Locale supportedLocale in supportedLocales) {
       if (supportedLocale.languageCode == locale?.languageCode &&
           supportedLocale.countryCode == locale?.countryCode) {
